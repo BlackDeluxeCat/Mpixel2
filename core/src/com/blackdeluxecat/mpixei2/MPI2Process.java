@@ -33,7 +33,7 @@ public class MPI2Process {
 		int pointer = 0;
 		for(Integer key : intMap.keySet()){
 			colors.setColor(key);
-			colors.drawRectangle(pointer / 128 * 8, Math.floorMod(pointer, 128) * 8, 5,5);
+			colors.fillRectangle(pointer / 128 * 8, Math.floorMod(pointer, 128) * 8, 5,5);
 			pointer++;
 		}
 		return colors;

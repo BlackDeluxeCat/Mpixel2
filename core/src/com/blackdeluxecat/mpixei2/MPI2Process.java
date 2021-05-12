@@ -1,6 +1,5 @@
 package com.blackdeluxecat.mpixei2;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
@@ -13,36 +12,29 @@ public class MPI2Process {
 	}
 
 	public static final Pixmap getColorMap(Pixmap pic) {
-		HashMap<Integer, int[]> intMap = new HashMap<Integer, int[]>();
-		int pointer = 0;
-		boolean has;
-		int[] rgba;
+		HashMap<Integer, Integer> intMap = new HashMap<Integer, Integer>();
+
+		int intrgba;
 		for(int x = 0; x < pic.getWidth(); x++) {
 			Gdx.app.log("", x + " " + intMap.size());
 			for(int y = 0; y < pic.getHeight(); y++) {
 				
-				has = false;
-				rgba = decodeRGBA8888(pic.getPixel(x, y));
-				
-				for(Integer key : intMap.keySet()){
-					if(Arrays.equals(intMap.get(key), rgba)) {
-						has = true;
-						break;
-					}
-				}
-				
-				if(!has) {
-					intMap.put(pointer, decodeRGBA8888(pic.getPixel(x, y)));
-					pointer++;
+				intrgba = pic.getPixel(x, y);
+				if(intMap.containsKey(intrgba)) {
+					intMap.put(intrgba, intMap.get(intrgba) + 1);
+				}else {
+					intMap.put(intrgba, 1);
 				}
 				
 			}
 		}
 		
-		Pixmap colors = new Pixmap(Math.max(1,intMap.size()) / 16 + 8, Math.max(1,intMap.size()), Format.RGBA8888);
+		Pixmap colors = new Pixmap(Math.max(1,intMap.size()) / 128 * 8 + 8, 128 * 8, Format.RGBA8888);
+		int pointer = 0;
 		for(Integer key : intMap.keySet()){
-			colors.setColor(getIntRGBA8888(intMap.get(key)));
-			colors.drawRectangle(key / 128, key.intValue(), 5,1);
+			colors.setColor(key);
+			colors.drawRectangle(pointer / 128 * 8, Math.floorMod(pointer, 128) * 8, 5,5);
+			pointer++;
 		}
 		return colors;
 	}

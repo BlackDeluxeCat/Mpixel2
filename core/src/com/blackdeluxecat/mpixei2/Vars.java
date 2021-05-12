@@ -12,8 +12,6 @@ public class Vars {
 	
 
 
-	public static final int[][][] RGB_SPACE = new int[256][256][256];
-
 
 
 }

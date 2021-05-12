@@ -7,7 +7,8 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 
 public class MPI2Process {
-
+	public static int colorCounts;
+	public static HashMap<Integer, Integer> colorHashMap;
 	public MPI2Process() {
 	}
 
@@ -29,13 +30,19 @@ public class MPI2Process {
 			}
 		}
 		
-		Pixmap colors = new Pixmap(Math.max(1,intMap.size()) / 128 * 8 + 8, 128 * 8, Format.RGBA8888);
+		colorHashMap = intMap;
+		
+		/*display color map with 8x8 origin color, 8x8 selected color and 4x8 empty space,
+		*max 128 colors per column.
+		*/
+		Pixmap colors = new Pixmap((Math.max(1,intMap.size()) / 128 + 1)* 20, Math.min(128, intMap.size()) * 8, Format.RGBA8888);
 		int pointer = 0;
 		for(Integer key : intMap.keySet()){
 			colors.setColor(key);
-			colors.fillRectangle(pointer / 128 * 8, Math.floorMod(pointer, 128) * 8, 5,5);
+			colors.fillRectangle(pointer / 128 * 20, Math.floorMod(pointer, 128) * 8, 8,8);
 			pointer++;
 		}
+		colorCounts = pointer - 1;
 		return colors;
 	}
 	

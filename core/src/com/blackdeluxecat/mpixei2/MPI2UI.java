@@ -42,7 +42,7 @@ public class MPI2UI {
 	public Table buttonTable;
 	
 	private TextField dirTextField;
-	private Label dirCheckLabel;
+	private Label dirCheckLabel, colorMapLabel;
 	private TextButton dirCheckButton, processButton;
 	
 	private Image originImage, colorfiedImage, colorMapImage;
@@ -61,12 +61,13 @@ public class MPI2UI {
 		buttonChecked = MPI2UI.pureFieldTexture(new Color(0.5f,0.7f,0.5f,1f), Vars.BUTTON_WIDTH, Vars.BUTTON_HEIGHT);
 		
 		
-		bitmapFont = new BitmapFont(Gdx.files.internal("fonts/zh_cn.fnt"));
-		bitmapFont.getData().setScale(0.8f);
+		bitmapFont = new BitmapFont(Gdx.files.internal("fonts/zh_cn_16.fnt"));
+		bitmapFont.getData().setScale(1f);
 		
 		textStyle = new TextFieldStyle();
 		textStyle.font = bitmapFont;
-		textStyle.fontColor = new Color(0.6f, 0.5f, 0f, 1f);
+		textStyle.fontColor = new Color(0.6f, 0.5f, 1f, 1f);
+		textStyle.selection = new TextureRegionDrawable(buttonChecked);
 		textStyle.background = new TextureRegionDrawable(buttonDown); 
 		textStyle.cursor = new TextureRegionDrawable(cursorTexture);
 		
@@ -92,10 +93,10 @@ public class MPI2UI {
 	}
 	
 	public void tableSetup(Stage stage) {
-		dirTextField = new TextField("E:\\ͼƬ\\ͼ��\\pixiv\\illust_72130251_20191017_152509.png", textStyle);
+		dirTextField = new TextField(Vars.INIT_PATH, textStyle);
 		dirTextField.setSize(Vars.TEXT_FIELD_WIDTH, Vars.TEXT_FIELD_HEIGHT);
 		
-		dirCheckLabel = new Label("[File]", labelStyle);
+		dirCheckLabel = new Label("[当前]", labelStyle);
 		dirCheckLabel.setSize(Vars.TEXT_FIELD_WIDTH, Vars.TEXT_FIELD_HEIGHT);
 		
 		dirCheckButton = new TextButton("Import", textButtonStyle);
@@ -106,7 +107,7 @@ public class MPI2UI {
 				
 				FileHandle file = Gdx.files.absolute(dirTextField.getText());
 				Gdx.app.log("", file.path() + "");
-				dirCheckLabel.setText("[File] " + ((file.exists())? dirTextField.getText():"(not a vaild file)"));
+				dirCheckLabel.setText("[当前] " + ((file.exists())? dirTextField.getText():"(not a vaild file)"));
 				if(!file.exists()) return;
 				try {
 					origin.dispose();
@@ -140,11 +141,14 @@ public class MPI2UI {
 			}
 		});
 		
-		
+		colorMapLabel = new Label("COLORMAP", labelStyle);
 
 		originImage = new Image();
 		colorfiedImage = new Image();
 		colorMapImage = new Image();
+		
+		
+		
 		
 		rootTable = new Table();
 		fileTable = new Table();
@@ -163,11 +167,11 @@ public class MPI2UI {
 		
 		imageTable.add(new Label("ORIGIN", labelStyle));
 		imageTable.add(new Label("PROCESSED", labelStyle));
-		imageTable.add(new Label("COLORMAP", labelStyle));
+		imageTable.add(colorMapLabel);
 		imageTable.row();
-		imageTable.add(originImage).pad(3f).getActor().setScaling(Scaling.fit);
+		imageTable.add(originImage).minHeight(400f).pad(3f).getActor().setScaling(Scaling.fit);
 		imageTable.add(colorfiedImage).pad(3f).getActor().setScaling(Scaling.fit);
-		imageTable.add(colorMapImage).pad(3f).fill();
+		imageTable.add(colorMapImage).pad(3f).center().grow();
 		
 		rootTable.defaults();
 		rootTable.add(fileTable);
@@ -182,6 +186,8 @@ public class MPI2UI {
 		originImage.setDrawable(new TextureRegionDrawable(originTexture));
 		colorfiedImage.setDrawable(new TextureRegionDrawable(colorfiedTexture));
 		colorMapImage.setDrawable(new TextureRegionDrawable(colorMapTexture));
+		
+		colorMapLabel.setText("COLORS: " + MPI2Process.colorCounts);
 	}
 	
 	//called when dispose
